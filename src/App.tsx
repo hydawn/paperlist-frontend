@@ -4,38 +4,29 @@ import UserHomePage from './UserHomePage.tsx'
 
 import axios from 'axios';
 
-function checkUserLogin(setOnPage: Function) {
-  axios.get('/api/get_user_loggedin/')
+function checkUserLogin(setLoginStatus: Function) {
+  axios.get('/api/get_user_loggedin')
   .then(resp => {
     console.log('got resp:', resp)
     if (resp.data.loggedin) {
-      console.log('is loggedin')
-      setOnPage('home')
+      console.log('is loggedin');
+      setLoginStatus(true);
     } else {
-      console.log('not loggedin yet')
-      setOnPage('login')
+      console.log('not loggedin yet');
+      setLoginStatus(false);
     }
   }).catch(error => {
-    console.error('error:', error)
-    alert('unknown error')
+    console.error('error:', error);
   });
   return "good or bad, let's see console";
 }
 
+export default function App() {
+  const [loginStatus, setLoginStatus] = useState<boolean | null>(null);
 
-function App() {
-  const [onPage, setOnPage] = useState('home');
+  useEffect(() => { checkUserLogin(setLoginStatus); }, []);
 
-  useEffect(() => {
-    checkUserLogin(setOnPage);
-  }, []);
-
-  return (
-    <>
-      {onPage === "login" && <LoginSignupPage />}
-      {onPage === "home" && <UserHomePage />}
-    </>
-  );
+  if (loginStatus)
+    return <UserHomePage setLoginStatus={setLoginStatus} />;
+  return <LoginSignupPage setLoginStatus={setLoginStatus} />
 }
-
-export default App
