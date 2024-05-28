@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import LoginSignupPage from './LoginSignupPage.tsx'
-import UserHomePage from './UserHomePage.tsx'
+import LoadingPage from './LoadingPage.tsx';
+import MainPage from './MainPage.tsx';
 
 import axios from 'axios';
 
@@ -26,7 +27,9 @@ export default function App() {
 
   useEffect(() => { checkUserLogin(setLoginStatus); }, []);
 
+  if (loginStatus === null)
+    return <LoadingPage />;
   if (loginStatus)
-    return <UserHomePage setLoginStatus={setLoginStatus} />;
+    return <MainPage setLoginStatus={setLoginStatus} />;
   return <LoginSignupPage setLoginStatus={setLoginStatus} />
 }
