@@ -3,6 +3,9 @@ import LoginSignupPage from './LoginSignupPage.tsx'
 import LoadingPage from './LoadingPage.tsx';
 import MainPage from './MainPage.tsx';
 
+// for collapse and stuff
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 import axios from 'axios';
 
 function checkUserLogin(setLoginStatus: Function) {
