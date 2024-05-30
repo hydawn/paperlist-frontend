@@ -1,0 +1,27 @@
+.input-group {
+  display: flex;
+}
+
+.paper-title {
+  flex: 1 1 50%; /* 40% of the container's width */
+}
+
+.paper-journal {
+  flex: 1 1 20%; /* 30% of the container's width */
+  max-width: 20%; /* Ensure the button doesn't grow larger than 15% */
+}
+
+.paper-publication-date {
+  flex: 1 1 10%; /* 15% of the container's width */
+  max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
+}
+
+.paper-citations {
+  flex: 1 1 10%; /* 15% of the container's width */
+  max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
+}
+
+.paper-more {
+  flex: 1 1 10%; /* 15% of the container's width */
+  max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
+}

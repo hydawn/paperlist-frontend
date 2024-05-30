@@ -56,7 +56,7 @@ function TopNavBar({page, setPage}: TopNavBarProps) {
 
 export default function UserHomePage({setLoginStatus}: Props) {
   // info, paper, paperset, addpaper, addpaperset
-  const [page, setPage] = useState('信息');
+  const [page, setPage] = useState('论文');
 
   return (<>
     <TopNavBar page={page} setPage={setPage} />

@@ -111,7 +111,7 @@ export default function AddPaper({ setPage }: Props) {
       return;
     paperForm.publication_date = pubdate;
     console.log(paperForm)
-    await postInsertion(paperForm, () => { setPage('添加论文') });
+    await postInsertion(paperForm, () => { setPage('论文') });
   }
 
   function PublicationDateInput() {

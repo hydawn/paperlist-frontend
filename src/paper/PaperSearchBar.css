@@ -1,0 +1,22 @@
+.input-group {
+  display: flex;
+}
+
+.searchpaper-title {
+  flex: 1 1 50%; /* 40% of the container's width */
+}
+
+.searchpaper-journal {
+  flex: 1 1 30%; /* 30% of the container's width */
+  max-width: 20%; /* Ensure the button doesn't grow larger than 15% */
+}
+
+.searchpaper-uploader {
+  flex: 1 1 10%; /* 15% of the container's width */
+  max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
+}
+
+.searchpaper-regex {
+  flex: 1 1 10%; /* 15% of the container's width */
+  max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
+}
