@@ -11,7 +11,9 @@ interface Prop {
 };
 
 export default function MainPage({setLoginStatus}: Prop) {
-  const [onPage, setOnPage] = useState('主页');
+  // const [onPage, setOnPage] = useState('主页');
+  // DEBUG: for debug
+  const [onPage, setOnPage] = useState('论文');
 
   function MainPageWindow() {
     switch (onPage) {

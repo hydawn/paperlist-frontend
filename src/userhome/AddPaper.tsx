@@ -2,10 +2,6 @@ import axios from 'axios';
 import { ChangeEvent, useState, useRef, FormEvent } from 'react';
 import DynamicAuthorsInput from './AuthorsInput';
 
-interface Props {
-  setPage: Function
-}
-
 function handleFileChange(event: ChangeEvent<HTMLInputElement>, setFile: Function) {
   if (!event.target.files || event.target.files.length <= 0) {
     return;
@@ -36,7 +32,7 @@ async function postInsertion(payload: object, onSuccess: Function) {
   });
 }
 
-export default function AddPaper({ setPage }: Props) {
+export default function AddPaper() {
   const titleRef = useRef<HTMLInputElement>(null);
   const journalRef = useRef<HTMLInputElement>(null);
   const abstractRef = useRef<HTMLTextAreaElement>(null);
@@ -111,7 +107,7 @@ export default function AddPaper({ setPage }: Props) {
       return;
     paperForm.publication_date = pubdate;
     console.log(paperForm)
-    await postInsertion(paperForm, () => { setPage('论文') });
+    await postInsertion(paperForm, () => { });
   }
 
   function PublicationDateInput() {

@@ -35,13 +35,6 @@ function TopNavBar({page, setPage}: TopNavBarProps) {
     </li>;
   }
 
-  /*
-    <div className="d-flex" role="search">
-      <input className="form-control me-2" type="search" placeholder={"搜索" + page} aria-label="Search" />
-      <button className="btn btn-outline-success" type="submit">搜索</button>
-    </div>
-  */
-
   return <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div className="container-fluid">
       <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -63,7 +56,7 @@ export default function UserHomePage({setLoginStatus}: Props) {
     {page === '信息' && <InfoPage setLoginStatus={setLoginStatus} />}
     {page === '论文' && <PaperPage />}
     {page === '论文库' && <h1>Paper Set</h1>}
-    {page === '添加论文' && <AddPaper setPage={setPage} />}
+    {page === '添加论文' && <AddPaper />}
     {page === '添加论文库' && <h1>Add Paper Set</h1>}
   </>);
 }
