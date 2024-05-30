@@ -63,7 +63,7 @@ export default function UserHomePage({setLoginStatus}: Props) {
     {page === '信息' && <InfoPage setLoginStatus={setLoginStatus} />}
     {page === '论文' && <PaperPage />}
     {page === '论文库' && <h1>Paper Set</h1>}
-    {page === '添加论文' && <AddPaper />}
+    {page === '添加论文' && <AddPaper setPage={setPage} />}
     {page === '添加论文库' && <h1>Add Paper Set</h1>}
   </>);
 }

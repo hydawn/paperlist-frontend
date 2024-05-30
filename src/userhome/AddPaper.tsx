@@ -2,6 +2,10 @@ import axios from 'axios';
 import { ChangeEvent, useState, useRef, FormEvent } from 'react';
 import DynamicAuthorsInput from './AuthorsInput';
 
+interface Props {
+  setPage: Function
+}
+
 function handleFileChange(event: ChangeEvent<HTMLInputElement>, setFile: Function) {
   if (!event.target.files || event.target.files.length <= 0) {
     return;
@@ -19,19 +23,27 @@ function handleFileChange(event: ChangeEvent<HTMLInputElement>, setFile: Functio
   reader.readAsDataURL(file);
 }
 
-async function postInsertion(payload: object) {
+async function postInsertion(payload: object, onSuccess: Function) {
   console.log('got payload trying to post insert');
-  // axios.post('/api/insert_paper', payload).then().catch();
+  axios.post(
+    '/api/insert_paper',
+    payload
+  ).then(resp => {
+    console.log('success, got resp:', resp);
+    onSuccess();
+  }).catch(resp => {
+    console.error('error inserting paper:', resp);
+  });
 }
 
-export default function AddPaper() {
+export default function AddPaper({ setPage }: Props) {
   const titleRef = useRef<HTMLInputElement>(null);
   const journalRef = useRef<HTMLInputElement>(null);
-  // const citeRef = useRef<HTMLInputElement>(null);
   const abstractRef = useRef<HTMLTextAreaElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [authors, setAuthors] = useState<string[]>(['']);
+  const [pubdate, setPubdate] = useState<string | null>(null);
 
   var paperForm = {
     title: '',
@@ -58,11 +70,11 @@ export default function AddPaper() {
     console.log('got:', gotDate);
     if (!gotDate.match(regex)) {
       setWasInvalid(true);
-      alert(`date: [${gotDate}] does not match [${regex}]`);
+      // alert(`date: [${gotDate}] does not match [${regex}]`);
       return false;
     }
     setWasInvalid(false);
-    paperForm.publication_date = gotDate;
+    setPubdate(gotDate);
     return true;
   }
 
@@ -76,7 +88,7 @@ export default function AddPaper() {
   async function submitInsertion(event: FormEvent) {
     event.preventDefault();
     if (!checkPaloadGood()) {
-      alert('bad payload');
+      // alert('bad payload');
       return;
     }
     if (!titleRef.current?.value)
@@ -95,8 +107,11 @@ export default function AddPaper() {
       return;
     paperForm.file_content = fileContent;
     paperForm.authors = authors;
+    if (pubdate === null)
+      return;
+    paperForm.publication_date = pubdate;
     console.log(paperForm)
-    await postInsertion(paperForm);
+    await postInsertion(paperForm, () => { setPage('添加论文') });
   }
 
   function PublicationDateInput() {
@@ -108,7 +123,7 @@ export default function AddPaper() {
         <input type="text"
           className={"form-control" + (wasInvalid ? " is-invalid" : "")}
           id="inputDate"
-          defaultValue={paperForm.publication_date}
+          defaultValue={pubdate || ''}
           // onChange={(event) => {setInputDate(event.target.value)}}
           onBlur={(event) => {checkDate(event.target.value, setWasInvalid)}}
         />
