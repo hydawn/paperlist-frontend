@@ -1,43 +1,41 @@
 import { useState, useEffect } from "react";
 import PaperPageSearchBar from "./PaperPageSearchBar.tsx";
-import { PaperInfo } from './Types.tsx';
+import { PaperInfo, SearchPaperParam } from './Types.tsx';
 
 import axios from "axios";
 
-interface Params {
-  [key: string]: string | number | boolean;
-}
-
-async function getPapers(setPaperInfoList: Function, params: Params) {
+async function getPapers(setPaperInfoList: Function, params: SearchPaperParam) {
   await axios.get('/api/search_paper', { params: params }).then(resp => {
     setPaperInfoList(resp.data.data.data_list as Array<PaperInfo>);
+    console.log(resp.data.data.data_list[0].authors)
   }).catch(resp => { console.error('got error', resp) })
 }
 
 interface PresentPaperProps {
   paperInfo: PaperInfo,
   index: number,
-  setPaperId: Function
+  setPaperInfo: Function
 }
 
-function PresentPaper({paperInfo, index, setPaperId}: PresentPaperProps) {
+function PresentPaper({paperInfo, index, setPaperInfo}: PresentPaperProps) {
   return <div className="input-group mb-3">
     <input type="text" aria-label="Paper Title" value={paperInfo.title} readOnly className="form-control paper-title" />
     <input type="text" aria-label="Journal" value={paperInfo.journal} readOnly className="form-control paper-journal" />
     <input type="text" aria-label="Pub Date" value={paperInfo.publication_date} readOnly className="form-control paper-publication-date" />
     <input type="text" aria-label="Citations" value={paperInfo.total_citations} readOnly className="form-control paper-citations" />
-    <button className="form-control paper-more" disabled={index === 0} onClick={() => { setPaperId(paperInfo.paperid) }}>{index === 0 ? "" : "更多"}</button>
+    <button className="form-control paper-more" disabled={index === 0} onClick={() => { setPaperInfo(paperInfo) }}>{index === 0 ? "" : "更多"}</button>
   </div>;
 }
 
 interface Props {
-  setPaperId: Function
+  setPaperInfo: Function
 }
 
-export default function PaperListPage({setPaperId}: Props) {
+export default function PaperListPage({setPaperInfo}: Props) {
   const [paperInfoList, setPaperInfoList] = useState<Array<PaperInfo> | null>(null);
+  const [searchParam, setSearchParam] = useState<SearchPaperParam>({page: 1, per_page: 10, title: '', uploader: '', journal: '', regex: false});
 
-  useEffect(() => {getPapers(setPaperInfoList, {page: 1, per_page: 10, title: ''})}, []);
+  useEffect(() => {getPapers(setPaperInfoList, searchParam)}, []);
 
   function PresentPapers() {
     const header: PaperInfo = {
@@ -52,18 +50,19 @@ export default function PaperListPage({setPaperId}: Props) {
       journal: '发表期刊',
       total_citations: '引用数',
       is_private: false,
+      authors: [],
     }
     return <div>
-      <PresentPaper paperInfo={header} index={0} setPaperId={setPaperId} />
+      <PresentPaper paperInfo={header} index={0} setPaperInfo={setPaperInfo} />
       {paperInfoList && paperInfoList.map((paperInfo, index) => (
-        <PresentPaper paperInfo={paperInfo} index={index + 1} setPaperId={setPaperId} />
+        <PresentPaper paperInfo={paperInfo} index={index + 1} setPaperInfo={setPaperInfo} />
       ))}
     </div>;
   }
 
   return <>
     <h1>论文列表</h1>
-    <PaperPageSearchBar setPaperInfoList={setPaperInfoList} />
+    <PaperPageSearchBar setSearchParam={(params: SearchPaperParam) => {setSearchParam(params); getPapers(setPaperInfoList, params)}} />
     <PresentPapers />
   </>;
 }

@@ -1,19 +1,11 @@
 import { useState } from "react";
-import axios, { AxiosResponse } from "axios";
-import { PaperInfo } from './Types.tsx';
 
 interface Props {
-  setPaperInfoList: Function
+  setSearchParam: Function
 }
 
-async function searchParams(params: object, onSuccess: (value: AxiosResponse) => AxiosResponse) {
-  await axios.get('/api/search_paper', {params: params}).then(onSuccess).catch(resp => {console.error('got error', resp)});
-}
-
-export default function PaperPageSearchBar({setPaperInfoList}: Props) {
+export default function PaperPageSearchBar({setSearchParam}: Props) {
   const [searchStatus, setSearchStatus] = useState('题目');
-  // const [searchStatus, setSearchStatus] = useState('高级搜索');
-  const [paperPage, setPaperPage] = useState(1);
   const [title, setTitle] = useState<string | null>(null);
   const [uploader, setUploader] = useState<string | null>(null);
   const [journal, setJournal] = useState<string | null>(null);
@@ -30,7 +22,7 @@ export default function PaperPageSearchBar({setPaperInfoList}: Props) {
 
   async function handleSearch() {
     const params = {
-      page: paperPage,
+      page: 1,
       per_page: 10,
       title: title,
       uploader: uploader,
@@ -38,11 +30,7 @@ export default function PaperPageSearchBar({setPaperInfoList}: Props) {
       regex: useRegex,
     };
     console.log('searching with', params);
-    searchParams(params, (resp: AxiosResponse) => {
-      console.log('got ', resp.data.data.data_list.length);
-      setPaperInfoList(resp.data.data.data_list as Array<PaperInfo>);
-      return resp;
-    });
+    setSearchParam(params);
   }
 
   function handleDropdownClick(statusTo: string) {

@@ -3,6 +3,7 @@ import './PaperPage.css'
 import PaperDetailPage from "./PaperDetailPage.tsx";
 import AddPaper from "../userhome/AddPaper.tsx";
 import PaperListPage from "./PaperListPage.tsx";
+import { PaperInfo } from "./Types.tsx";
 
 interface TopNavBarProps {
   windowList: Array<string>
@@ -32,19 +33,21 @@ function TopNavBar({windowList, onWindow, setOnWindow, disableThis}: TopNavBarPr
 
 export default function PaperPage() {
   const [onWindow, setOnWindow] = useState<string>('论文列表');
-  const [paperId, setPaperId] = useState<string | null>(null);
+  const [paperInfo, setPaperInfo] = useState<PaperInfo | null>(null);
   const windowList = ['论文列表', '论文详情', '添加论文'];
 
   function disableWindow(window: string) {
-    if (window === '论文详情' && paperId === null)
+    if (window === '论文详情' && paperInfo === null)
       return true;
     return false;
   }
 
+  console.log('onWindow is ', onWindow);
+
   return <>
     <TopNavBar windowList={windowList} onWindow={onWindow} setOnWindow={setOnWindow} disableThis={disableWindow} />
-    { onWindow === '论文列表' && <PaperListPage setPaperId={(paperId: string) => {setPaperId(paperId); setOnWindow('论文详情')}} /> }
-    { onWindow === '论文详情' && paperId && <PaperDetailPage paperId={paperId} /> }
+    { onWindow === '论文列表' && <PaperListPage setPaperInfo={(paperInfo: PaperInfo) => {setPaperInfo(paperInfo); setOnWindow('论文详情')}} /> }
+    { onWindow === '论文详情' && paperInfo && <PaperDetailPage inputPaperInfo={paperInfo} /> }
     { onWindow === '添加论文' && <AddPaper /> }
   </>;
 }
