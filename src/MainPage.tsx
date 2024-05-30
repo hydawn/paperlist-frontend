@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import SideBar from './SideBar.tsx';
 import UserHomePage from './UserHomePage.tsx'
-import PaperPage from './PaperPage.tsx'
-import PaperSetPage from './PaperSetPage.tsx';
+import PaperPage from './paper/PaperPage.tsx'
+import PaperSetPage from './paperset/PaperSetPage.tsx';
 import { Container, Row, Col } from 'react-bootstrap';
 import './MainPage.css';
 
@@ -18,7 +18,7 @@ export default function MainPage({setLoginStatus}: Prop) {
       case '论文库':
         return <PaperSetPage setOnPage={setOnPage} />;
       case '论文':
-        return <PaperPage setOnPage={setOnPage} />;
+        return <PaperPage />;
       default:
         return <UserHomePage setLoginStatus={setLoginStatus} />;
     }

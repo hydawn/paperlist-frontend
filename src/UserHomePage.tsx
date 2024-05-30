@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import InfoPage from './userhome/InfoPage';
+import InfoPage from './userhome/InfoPage.tsx';
+import PaperPage from './paper/PaperPage.tsx';
+import AddPaper from './userhome/AddPaper.tsx';
 
 interface Props {
   setLoginStatus: Function
@@ -27,8 +29,8 @@ function TopNavBar({page, setPage}: TopNavBarProps) {
         添加
       </a>
       <ul className="dropdown-menu">
-        <li><a className="dropdown-item" onClick={() => { setPage('添加论文') }}>论文</a></li>
-        <li><a className="dropdown-item" onClick={() => { setPage('添加论文库') }}>论文库</a></li>
+        <li><a className="dropdown-item" role="button" onClick={() => { setPage('添加论文') }}>论文</a></li>
+        <li><a className="dropdown-item" role="button" onClick={() => { setPage('添加论文库') }}>论文库</a></li>
       </ul>
     </li>;
   }
@@ -59,9 +61,9 @@ export default function UserHomePage({setLoginStatus}: Props) {
   return (<>
     <TopNavBar page={page} setPage={setPage} />
     {page === '信息' && <InfoPage setLoginStatus={setLoginStatus} />}
-    {page === '论文' && <h1>Papers</h1>}
+    {page === '论文' && <PaperPage />}
     {page === '论文库' && <h1>Paper Set</h1>}
-    {page === '添加论文' && <h1>Add Paper</h1>}
+    {page === '添加论文' && <AddPaper />}
     {page === '添加论文库' && <h1>Add Paper Set</h1>}
   </>);
 }
