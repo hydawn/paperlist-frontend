@@ -9,25 +9,28 @@ export default function PaperPageSearchBar({setSearchParam}: Props) {
   const [title, setTitle] = useState<string | null>(null);
   const [uploader, setUploader] = useState<string | null>(null);
   const [journal, setJournal] = useState<string | null>(null);
+  const [author, setAuthor] = useState<string | null>(null);
   const [useRegex, setUseRegex] = useState<boolean>(false);
-  const simpleSearch = ['题目', '期刊', '上传者'];
+  const simpleSearch = ['题目', '期刊', '上传者', '作者'];
 
   // reset all filters to default
   function setSearchFilterDefault() {
     setTitle(null);
     setUploader(null);
     setJournal(null);
+    setAuthor(null);
     setUseRegex(false);
   }
 
   async function handleSearch() {
     const params = {
       page: 1,
-      per_page: 10,
+      per_page: 3,
       title: title,
       uploader: uploader,
       journal: journal,
       regex: useRegex,
+      author: author,
     };
     console.log('searching with', params);
     setSearchParam(params);
@@ -70,11 +73,13 @@ export default function PaperPageSearchBar({setSearchParam}: Props) {
       '题目': setTitle,
       '期刊': setJournal,
       '上传者': setUploader,
+      '作者': setAuthor,
     };
     const staterMap: { [key: string]: string | null } = {
       '题目': title,
       '期刊': journal,
       '上传者': uploader,
+      '作者': author,
     };
     return <div className="input-group mb-3">
       <input
@@ -115,6 +120,11 @@ export default function PaperPageSearchBar({setSearchParam}: Props) {
       <div className="form-floating">
         <input onBlur={(event) => {setUploader(event.target.value)}} type="text" aria-label="Search Uploader" defaultValue={uploader || ''} className="form-control searchpaper-uploader" />
         <label htmlFor="search-journal">上传者</label>
+      </div>
+
+      <div className="form-floating">
+        <input onBlur={(event) => {setAuthor(event.target.value)}} type="text" aria-label="Search Author" defaultValue={uploader || ''} className="form-control searchpaper-author" />
+        <label htmlFor="search-journal">作者</label>
       </div>
 
       <SimpleSearchButton />
