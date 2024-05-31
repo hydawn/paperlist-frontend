@@ -26,7 +26,7 @@ async function postInsertion(payload: object, onSuccess: Function) {
     payload
   ).then(resp => {
     console.log('success, got resp:', resp);
-    onSuccess();
+    onSuccess(resp);
   }).catch(resp => {
     console.error('error inserting paper:', resp);
   });
@@ -75,7 +75,8 @@ export default function AddPaper() {
   }
 
   function checkPaloadGood() {
-    if (!checkDate(paperForm.publication_date, (_: boolean) => {})) {
+    if (!checkDate(pubdate || '', (_: boolean) => {})) {
+      alert('check date failed, will not submit')
       return false;
     }
     return true;
@@ -84,27 +85,39 @@ export default function AddPaper() {
   async function submitInsertion(event: FormEvent) {
     event.preventDefault();
     if (!checkPaloadGood()) {
-      // alert('bad payload');
+      alert('bad payload');
       return;
     }
-    if (!titleRef.current?.value)
+    if (!titleRef.current?.value) {
+      console.log('title ref bad');
       return;
+    }
     paperForm.title = titleRef.current.value;
-    if (!abstractRef.current?.value)
+    if (!abstractRef.current?.value) {
+      console.log('abstract bad');
       return;
+    }
     paperForm.abstract = abstractRef.current.value;
-    if (!journalRef.current?.value)
+    if (!journalRef.current?.value) {
+      alert('journal bad');
       return;
+    }
     paperForm.journal = journalRef.current.value;
-    if (fileName === null)
+    if (fileName === null) {
+      alert('file name is null');
       return;
+    }
     paperForm.file_name = fileName;
-    if (fileContent === null)
+    if (fileContent === null) {
+      alert('file content is null');
       return;
+    }
     paperForm.file_content = fileContent;
     paperForm.authors = authors;
-    if (pubdate === null)
+    if (pubdate === null) {
+      alert('pubdate is null');
       return;
+    }
     paperForm.publication_date = pubdate;
     console.log(paperForm)
     await postInsertion(paperForm, () => { });
