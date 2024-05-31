@@ -1,4 +1,4 @@
-import {PaperInfo, Comment} from "./Types";
+import {PaperInfo, Comment} from "../Types";
 import LoadingPage from "../LoadingPage";
 import {useState, useEffect} from "react";
 

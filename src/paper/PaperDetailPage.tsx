@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {PaperInfo} from "./Types";
+import {PaperInfo} from "../Types";
 import LoadingPage from "../LoadingPage";
 import PaperReview from "./PaperReview";
 import PaperPreview from "./PaperPreview";

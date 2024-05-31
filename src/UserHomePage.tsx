@@ -2,6 +2,9 @@ import { useState } from 'react';
 import InfoPage from './userhome/InfoPage.tsx';
 import PaperPage from './paper/PaperPage.tsx';
 import AddPaper from './userhome/AddPaper.tsx';
+import {PaperInfo} from './Types.tsx';
+import PaperSetPage from './paperset/PaperSetPage.tsx';
+import AddPaperSet from './paperset/AddPaperSet.tsx';
 
 interface Props {
   setLoginStatus: Function
@@ -48,15 +51,15 @@ function TopNavBar({page, setPage}: TopNavBarProps) {
 }
 
 export default function UserHomePage({setLoginStatus}: Props) {
-  // info, paper, paperset, addpaper, addpaperset
   const [page, setPage] = useState('论文');
+  const [givenPaperInfo, setGivenPaperInfo] = useState<PaperInfo | null>(null);
 
   return (<>
     <TopNavBar page={page} setPage={setPage} />
     {page === '信息' && <InfoPage setLoginStatus={setLoginStatus} />}
-    {page === '论文' && <PaperPage />}
-    {page === '论文库' && <h1>Paper Set</h1>}
+    {page === '论文' && <PaperPage givenPaperInfo={givenPaperInfo} />}
+    {page === '论文库' && <PaperSetPage jumpPaperPage={(paperInfo: PaperInfo) => { setPage('论文'); setGivenPaperInfo(paperInfo)}} />}
     {page === '添加论文' && <AddPaper />}
-    {page === '添加论文库' && <h1>Add Paper Set</h1>}
+    {page === '添加论文库' && <AddPaperSet />}
   </>);
 }

@@ -4,6 +4,7 @@ import UserHomePage from './UserHomePage.tsx'
 import PaperPage from './paper/PaperPage.tsx'
 import PaperSetPage from './paperset/PaperSetPage.tsx';
 import { Container, Row, Col } from 'react-bootstrap';
+import { PaperInfo } from './Types.tsx';
 import './MainPage.css';
 
 interface Prop {
@@ -11,16 +12,16 @@ interface Prop {
 };
 
 export default function MainPage({setLoginStatus}: Prop) {
-  // const [onPage, setOnPage] = useState('主页');
-  // DEBUG: for debug
+  // const [onPage, setOnPage] = useState('论文库');
   const [onPage, setOnPage] = useState('论文');
+  const [givenPaperInfo, setGivenPaperInfo] = useState<PaperInfo | null>(null);
 
   function MainPageWindow() {
     switch (onPage) {
       case '论文库':
-        return <PaperSetPage setOnPage={setOnPage} />;
+        return <PaperSetPage jumpPaperPage={(paperInfo: PaperInfo) => { setOnPage('论文'); setGivenPaperInfo(paperInfo)}} />;
       case '论文':
-        return <PaperPage />;
+        return <PaperPage givenPaperInfo={givenPaperInfo} />;
       default:
         return <UserHomePage setLoginStatus={setLoginStatus} />;
     }

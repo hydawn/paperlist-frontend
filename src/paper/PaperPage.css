@@ -25,3 +25,8 @@
   flex: 1 1 10%; /* 15% of the container's width */
   max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
 }
+
+.search-button {
+  flex: 1 1 10%; /* 15% of the container's width */
+  max-width: 10%; /* Ensure the button doesn't grow larger than 15% */
+}
