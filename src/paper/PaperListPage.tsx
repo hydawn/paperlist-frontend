@@ -3,13 +3,7 @@ import PaperPageSearchBar from "./PaperPageSearchBar.tsx";
 import { PaperInfo, SearchPaperParam } from './Types.tsx';
 
 import axios from "axios";
-
-async function getPapers(setPaperInfoList: Function, params: SearchPaperParam) {
-  await axios.get('/api/search_paper', { params: params }).then(resp => {
-    setPaperInfoList(resp.data.data.data_list as Array<PaperInfo>);
-    console.log(resp.data.data.data_list[0].authors)
-  }).catch(resp => { console.error('got error', resp) })
-}
+import SimplePager from "../SimplePager.tsx";
 
 interface PresentPaperProps {
   paperInfo: PaperInfo,
@@ -33,7 +27,18 @@ interface Props {
 
 export default function PaperListPage({setPaperInfo}: Props) {
   const [paperInfoList, setPaperInfoList] = useState<Array<PaperInfo> | null>(null);
-  const [searchParam, setSearchParam] = useState<SearchPaperParam>({page: 1, per_page: 10, title: '', uploader: '', journal: '', regex: false});
+  const [searchParam, setSearchParam] = useState<SearchPaperParam>({page: 1, per_page: 3, title: '', uploader: '', journal: '', regex: false});
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(1);
+
+  async function getPapers(setPaperInfoList: Function, params: SearchPaperParam) {
+    await axios.get('/api/search_paper', { params: params }).then(resp => {
+      setPaperInfoList(resp.data.data.data_list as Array<PaperInfo>);
+      setCurrentPage(resp.data.data.current_page);
+      setTotalPage(resp.data.data.total_page);
+      console.log('current: ', resp.data.data.current_page)
+    }).catch(resp => { console.error('got error', resp) })
+  }
 
   useEffect(() => {getPapers(setPaperInfoList, searchParam)}, []);
 
@@ -64,5 +69,13 @@ export default function PaperListPage({setPaperInfo}: Props) {
     <h1>论文列表</h1>
     <PaperPageSearchBar setSearchParam={(params: SearchPaperParam) => {setSearchParam(params); getPapers(setPaperInfoList, params)}} />
     <PresentPapers />
+    <SimplePager
+      currentPage={currentPage}
+      totalPage={totalPage}
+      loadPage={(page: number) => {
+        const newparam = {...searchParam, page: page};
+        setSearchParam(newparam);
+        getPapers(setPaperInfoList, newparam);
+    }} />
   </>;
 }

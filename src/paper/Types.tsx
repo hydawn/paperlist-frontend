@@ -21,10 +21,10 @@ export interface Comment {
 }
 
 export interface SearchPaperParam {
-  page: 1,
-  per_page: 10,
-  title: '',
-  uploader: '',
-  journal: '',
-  regex: false,
+  page: number,
+  per_page: number,
+  title: string,
+  uploader: string,
+  journal: string,
+  regex: boolean,
 }
