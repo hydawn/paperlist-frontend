@@ -42,7 +42,7 @@ function PresentPaperDetail({paperInfo}: PresentPaperDetailProps) {
   function Authors() {
     return <div className="input-group mb-3">
       <span className="input-group-text">作者</span>
-      <input type="text" className="form-control" value={paperInfo.authors?.map((name, index) => (name + ((index + 1) === paperInfo.authors.length ? '' : ', ')))} readOnly disabled />
+      <input type="text" className="form-control" value={paperInfo.authors?.map((name, index) => name)} readOnly disabled />
     </div>;
   }
 
