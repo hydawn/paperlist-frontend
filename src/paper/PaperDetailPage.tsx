@@ -3,24 +3,42 @@ import axios from "axios";
 import {PaperInfo} from "./Types";
 import LoadingPage from "../LoadingPage";
 import PaperReview from "./PaperReview";
+import PaperPreview from "./PaperPreview";
 
 interface Props {
   inputPaperInfo: PaperInfo
 }
 
-async function getPaperDetail(paperId: string, setPaperInfo: Function) {
-  await axios.get('/api/paper_detail', { params: { paperid: paperId } }).then(resp => { setPaperInfo(resp.data.data as PaperInfo) }).catch(resp => {console.error('got error', resp)})
-}
+async function handleFileDownload(paperId: string) {
+  await axios.get('/api/paper_content', { params: { paperid: paperId }}).then(resp => {
+    const { file_name, file_content } = resp.data.data;
 
-async function getPaperContent(paperId: string, setPaperInfo: Function) {
-  await axios.get('/api/paper_content', { params: { paperid: paperId } }).then(resp => { setPaperInfo(resp.data.data as PaperInfo) }).catch(resp => {console.error('got error', resp)})
+    // Convert base64 to Blob
+    const byteCharacters = atob(file_content);
+    const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray]);
+
+    // Create a download link
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file_name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+  }).catch(resp => { console.error(resp); });
 }
 
 interface PresentPaperDetailProps {
-  paperInfo: PaperInfo
+  paperInfo: PaperInfo,
+  previewActive: boolean,
+  setPreviewActive: Function,
 }
 
-function PresentPaperDetail({paperInfo}: PresentPaperDetailProps) {
+function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: PresentPaperDetailProps) {
   function Abstract() {
     return <><div className="input-group mb-3">
       <span className="input-group-text">摘要</span>
@@ -42,7 +60,7 @@ function PresentPaperDetail({paperInfo}: PresentPaperDetailProps) {
   function Authors() {
     return <div className="input-group mb-3">
       <span className="input-group-text">作者</span>
-      <input type="text" className="form-control" value={paperInfo.authors?.map((name, index) => name)} readOnly disabled />
+      <input type="text" className="form-control" value={paperInfo.authors?.map((name) => name)} readOnly disabled />
     </div>;
   }
 
@@ -54,8 +72,13 @@ function PresentPaperDetail({paperInfo}: PresentPaperDetailProps) {
       <input type="text" className="form-control" value={paperInfo.publication_date} readOnly disabled />
       <span className="input-group-text">总引用</span>
       <input type="text" className="form-control" value={paperInfo.total_citations} readOnly disabled />
-      <button className="input-group-text btn btn-primary">文件预览</button>
-      <button className="input-group-text btn btn-success">文件下载</button>
+      <button
+        className={"input-group-text btn " + (previewActive ? " btn-danger" : " btn-primary")}
+        onClick={() => { setPreviewActive(!previewActive) }}
+      >
+      {previewActive ? '关闭' : '文件'}预览
+      </button>
+      <button className="input-group-text btn btn-success" onClick={() => { handleFileDownload(paperInfo.paperid) }}>文件下载</button>
     </div>;
   }
 
@@ -69,13 +92,15 @@ function PresentPaperDetail({paperInfo}: PresentPaperDetailProps) {
 
 export default function PaperDetailPage({inputPaperInfo}: Props) {
   const [paperInfo, setPaperInfo] = useState<PaperInfo | null>(null);
+  const [previewActive, setPreviewActive] = useState(false);
 
   useEffect(() => { setPaperInfo(inputPaperInfo) }, []);
 
   if (paperInfo === null)
     return <LoadingPage />;
   return <>
-    <PresentPaperDetail paperInfo={paperInfo} />
+    <PresentPaperDetail paperInfo={paperInfo} previewActive={previewActive} setPreviewActive={setPreviewActive} />
+    { previewActive && <PaperPreview paperInfo={paperInfo} /> }
     <PaperReview paperInfo={paperInfo} />
   </>;
 }
