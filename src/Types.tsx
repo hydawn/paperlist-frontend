@@ -28,9 +28,11 @@ export type SearchPaperParam = {
   journal: string,
   author: string,
   regex: boolean,
+  papersetid: string,
 }
 
 export type PaperSetInfo = {
+  papersetid: string,
   userid: string,
   username: string,
   name: string,

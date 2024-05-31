@@ -19,7 +19,7 @@ export default function MainPage({setLoginStatus}: Prop) {
   function MainPageWindow() {
     switch (onPage) {
       case '论文库':
-        return <PaperSetPage jumpPaperPage={(paperInfo: PaperInfo) => { setOnPage('论文'); setGivenPaperInfo(paperInfo)}} />;
+        return <PaperSetPage jumpPaperPage={(paperInfo: PaperInfo) => { setGivenPaperInfo(paperInfo); setOnPage('论文') }} />;
       case '论文':
         return <PaperPage givenPaperInfo={givenPaperInfo} />;
       default:

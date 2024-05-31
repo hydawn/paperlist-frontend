@@ -46,6 +46,7 @@ export default function PaperPageSearchBar({setSearchParam, ReservedButton }: Pr
       journal: journal,
       regex: useRegex,
       author: author,
+      papersetid: '',
     };
     console.log('searching with', params);
     setSearchParam(params);

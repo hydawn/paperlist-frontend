@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function PaperPage({givenPaperInfo}:Props ) {
-  const [onWindow, setOnWindow] = useState<string>('论文列表');
+  const [onWindow, setOnWindow] = useState<string>(givenPaperInfo === null ? '论文列表' : '论文详情');
   const [paperInfo, setPaperInfo] = useState<PaperInfo | null>(givenPaperInfo);
   const windowList = ['论文列表', '论文详情', '添加论文'];
 
@@ -25,7 +25,7 @@ export default function PaperPage({givenPaperInfo}:Props ) {
 
   return <>
     <TopNavBar windowList={windowList} onWindow={onWindow} setOnWindow={setOnWindow} disableThis={disableWindow} />
-    { onWindow === '论文列表' && <PaperListPage setPaperInfo={(paperInfo: PaperInfo) => {setPaperInfo(paperInfo); setOnWindow('论文详情')}} /> }
+    { onWindow === '论文列表' && <PaperListPage setPaperInfo={(paperInfo: PaperInfo) => {setPaperInfo(paperInfo); setOnWindow('论文详情')}} hijackSetSearchParam={(p)=>{return p}} /> }
     { onWindow === '论文详情' && paperInfo && <PaperDetailPage inputPaperInfo={paperInfo} /> }
     { onWindow === '添加论文' && <AddPaper /> }
   </>;
