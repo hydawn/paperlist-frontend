@@ -1,7 +1,6 @@
 import { PaperInfo, SearchBarProps, SearchParamType } from '../Types.tsx';
 import ListPage, { HijackButtonProps } from "../listpage/ListPage.tsx";
 import PaperPageSearchBar from "./PaperPageSearchBar.tsx";
-import ReloadContext from "../ReloadContext.tsx";
 
 interface Props {
   hijackSetSearchParam: (param: SearchParamType) => SearchParamType

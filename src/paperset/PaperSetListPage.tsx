@@ -24,7 +24,7 @@ export default function PaperSetListPage({ setPaperSetInfo }: Props) {
       className={className}
       disabled={index === 0}
       onClick={() => { setPaperSetInfo(item); }}
-    >更多</button>
+    >{index === 0 ? "" : "更多"}</button>
   }
 
   return <ListPage
