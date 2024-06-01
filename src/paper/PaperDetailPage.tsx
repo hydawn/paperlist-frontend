@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {PaperInfo} from "../Types";
+import { PaperInfo } from "../Types";
 import LoadingPage from "../LoadingPage";
 import PaperReview from "./PaperReview";
 import PaperPreview from "./PaperPreview";
+import PopUpPaperSetManagement from "../paperset/PopUpPaperSetManagement";
 
 interface Props {
   inputPaperInfo: PaperInfo
@@ -65,6 +66,7 @@ function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: Presen
   }
 
   function OtherInfo() {
+
     return <div className="input-group mb-3">
       <span className="input-group-text">发表期刊</span>
       <input type="text" className="form-control" value={paperInfo.journal} readOnly disabled />
@@ -72,11 +74,11 @@ function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: Presen
       <input type="text" className="form-control" value={paperInfo.publication_date} readOnly disabled />
       <span className="input-group-text">总引用</span>
       <input type="text" className="form-control" value={paperInfo.total_citations} readOnly disabled />
+      <PopUpPaperSetManagement paperid={paperInfo.paperid} />
       <button
-        className={"input-group-text btn " + (previewActive ? " btn-danger" : " btn-primary")}
-        onClick={() => { setPreviewActive(!previewActive) }}
+        className={"input-group-text btn " + (previewActive ? " btn-danger" : " btn-primary")} onClick={() => { setPreviewActive(!previewActive) }}
       >
-      {previewActive ? '关闭' : '文件'}预览
+        {previewActive ? '关闭' : '文件'}预览
       </button>
       <button className="input-group-text btn btn-success" onClick={() => { handleFileDownload(paperInfo.paperid) }}>文件下载</button>
     </div>;

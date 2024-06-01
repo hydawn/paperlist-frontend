@@ -44,5 +44,7 @@ export default function PaperListPage({setPaperInfo, hijackSetSearchParam}: Prop
     getApi="/api/search_paper"
     ItemPageSearchBar={UsingPaperPageSearchBar}
     grandName="论文列表"
+    buttonName="更多"
+    shouldButtonDisable={(_, __) => { return false }}
   />
 }

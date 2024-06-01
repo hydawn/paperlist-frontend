@@ -18,6 +18,66 @@ interface ListPageProps {
   getApi: string
   ItemPageSearchBar: ({}: SearchBarProps) => JSX.Element
   grandName: string
+  buttonName: string
+  shouldButtonDisable: (item: ItemType, index: number) => boolean
+}
+
+interface ListPageListSectionProps {
+  header: ItemType
+  itemList: Array<ItemType>
+  shouldButtonDisable: (item: ItemType, index: number) => boolean
+  ListPager: () => JSX.Element
+  setItemInfo: Function
+  buttonName: string
+}
+
+export function ListPageListSection({ header, itemList, shouldButtonDisable, ListPager, setItemInfo, buttonName }: ListPageListSectionProps) {
+  interface PresentItemProps {
+    item: ItemType,
+    index: number,
+  }
+
+  function PresentItem({item, index}: PresentItemProps) {
+    function PresentItemDetails() {
+      if (isPaperInfo(item)) {
+        return <>
+          <input type="text" aria-label="Paper Title" value={item.title} readOnly className="form-control paper-title" />
+          <input type="text" aria-label="Journal" value={item.journal} readOnly className="form-control paper-journal" />
+          <input type="text" aria-label="Pub Date" value={item.publication_date} readOnly className="form-control paper-publication-date" />
+          <input type="text" aria-label="Citations" value={item.total_citations} readOnly className="form-control paper-citations" />
+        </>;
+      }
+      if (isPaperSetInfo(item)) {
+        return <>
+          <input type="text" aria-label="PaperSet Name" value={item.name} readOnly className="form-control paperset-name" />
+          <input type="text" aria-label="Description" value={item.description} readOnly className="form-control paperset-description" />
+          <input type="text" aria-label="CreatedBy" value={item.username} readOnly className="form-control paperset-creator" />
+        </>;
+      }
+      return <></>;
+    }
+    function compositeDisable(item: ItemType, index: number) {
+      return shouldButtonDisable(item, index) || (index === 0);
+    }
+    return <div className="input-group mb-3">
+      <PresentItemDetails />
+      <button className="form-control paper-more" disabled={compositeDisable(item, index)} onClick={() => { setItemInfo(item) }}>{compositeDisable(item, index) ? "" : buttonName}</button>
+    </div>;
+  }
+
+  function PresentItems() {
+    return <div>
+      <PresentItem item={header} index={0} />
+      {itemList && itemList.map((item, index) => (
+        <PresentItem item={item} index={index + 1} />
+      ))}
+    </div>;
+  }
+
+  return <>
+    <PresentItems />
+    <ListPager />
+  </>;
 }
 
 export default function ListPage(
@@ -29,7 +89,9 @@ export default function ListPage(
       header,
       getApi,
       ItemPageSearchBar,
-      grandName
+      grandName,
+      buttonName,
+      shouldButtonDisable
     }: ListPageProps
   ) {
   const [searchParam, setSearchParam] = useState(searchParamDefault);
@@ -53,49 +115,13 @@ export default function ListPage(
     getItem(newparam);
   }
 
-  function ListPageListSection() {
-    interface PresentItemProps {
-      item: ItemType,
-      index: number,
-    }
-
-    function PresentItem({item, index}: PresentItemProps) {
-      if (isPaperInfo(item))
-        return <div className="input-group mb-3">
-          <input type="text" aria-label="Paper Title" value={item.title} readOnly className="form-control paper-title" />
-          <input type="text" aria-label="Journal" value={item.journal} readOnly className="form-control paper-journal" />
-          <input type="text" aria-label="Pub Date" value={item.publication_date} readOnly className="form-control paper-publication-date" />
-          <input type="text" aria-label="Citations" value={item.total_citations} readOnly className="form-control paper-citations" />
-          <button className="form-control paper-more" disabled={index === 0} onClick={() => { setItemInfo(item) }}>{index === 0 ? "" : "更多"}</button>
-        </div>;
-      if (isPaperSetInfo(item))
-        return <div className="input-group mb-3">
-          <input type="text" aria-label="PaperSet Name" value={item.name} readOnly className="form-control paperset-name" />
-          <input type="text" aria-label="Description" value={item.description} readOnly className="form-control paperset-description" />
-          <input type="text" aria-label="CreatedBy" value={item.username} readOnly className="form-control paperset-creator" />
-          <button className="form-control paper-more" disabled={index === 0} onClick={() => { setItemInfo(item) }}>{index === 0 ? "" : "更多"}</button>
-        </div>;
-      return <>this is nothing</>;
-    }
-
-    function PresentItems() {
-      return <div>
-        <PresentItem item={header} index={0} />
-        {itemList && itemList.map((item, index) => (
-          <PresentItem item={item} index={index + 1} />
-        ))}
-      </div>;
-    }
-
-    return <>
-      <PresentItems />
-      <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={loadPage} />
-    </>;
+  function ListPager() {
+    return <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={loadPage} />
   }
 
   return <>
     <h1>{grandName}</h1>
     <ItemPageSearchBar setSearchParam={(params: SearchParamType) => {setSearchParam(params); getItem(params)}} />
-    <ListPageListSection />
+    <ListPageListSection header={header} itemList={itemList} shouldButtonDisable={shouldButtonDisable} ListPager={ListPager} setItemInfo={setItemInfo} buttonName={buttonName} />
   </>;
 }
