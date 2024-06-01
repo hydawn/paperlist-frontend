@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { ItemType, PaperSetInfo, SearchParamType } from '../Types.tsx';
-import ListPage from "../listpage/ListPage.tsx";
+import { PaperSetInfo, SearchParamType } from '../Types.tsx';
+import ListPage, { HijackButtonProps } from "../listpage/ListPage.tsx";
 import PaperSetSearchBar from "./PaperSetSearchBar.tsx";
 
 interface Props {
   setPaperSetInfo: Function
-  buttonName: string
-  shouldButtonDisable: (item: ItemType, index: number) => boolean
 }
 
 export const defaultPaperSetHeader: PaperSetInfo = {
@@ -18,20 +16,23 @@ export const defaultPaperSetHeader: PaperSetInfo = {
   is_private: false,
 }
 
-export default function PaperSetListPage({setPaperSetInfo, buttonName, shouldButtonDisable}: Props) {
-  const [paperSetInfoList, setPaperSetInfoList] = useState<Array<PaperSetInfo> | null>(null);
+export default function PaperSetListPage({ setPaperSetInfo }: Props) {
   const searchDefault: SearchParamType = {page: 1, per_page: 3, name: '', description: '', creator: '', papertitle: '', paperjournal: '', paperuploader: '', paperauthor: '', regex: false}
 
+  function HijackButton({className, item, index}: HijackButtonProps) {
+    return <button
+      className={className}
+      disabled={index === 0}
+      onClick={() => { setPaperSetInfo(item); }}
+    >更多</button>
+  }
+
   return <ListPage
-    setItemInfo={setPaperSetInfo}
     searchParamDefault={searchDefault}
-    itemList={paperSetInfoList || []}
-    setItemList={(data_list: object) => {setPaperSetInfoList(data_list as Array<PaperSetInfo>)}}
     header={defaultPaperSetHeader}
     getApi="/api/search_paperset"
     ItemPageSearchBar={PaperSetSearchBar}
     grandName="论文库列表"
-    buttonName={buttonName}
-    shouldButtonDisable={shouldButtonDisable}
+    HijackButton={HijackButton}
   />;
 }

@@ -24,7 +24,7 @@ export default function PaperSetPage({jumpPaperPage}: Props) {
 
   return <>
     <TopNavBar windowList={windowList} onWindow={onWindow} setOnWindow={setOnWindow} disableThis={disableWindow} />
-    { onWindow === '论文库列表' && <PaperSetListPage setPaperSetInfo={(paperSetInfo: PaperSetInfo) => {setPaperSetInfo(paperSetInfo); setOnWindow('论文库详情')}} buttonName="更多" shouldButtonDisable={(_, __) => { return false }} /> }
+    { onWindow === '论文库列表' && <PaperSetListPage setPaperSetInfo={(paperSetInfo: PaperSetInfo) => {setPaperSetInfo(paperSetInfo); setOnWindow('论文库详情')}} /> }
     { onWindow === '论文库详情' && paperSetInfo && <PaperSetDetailPage paperSetInfo={paperSetInfo} jumpPaperPage={jumpPaperPage} /> }
     { onWindow === '添加论文库' && <AddPaperSet /> }
   </>;

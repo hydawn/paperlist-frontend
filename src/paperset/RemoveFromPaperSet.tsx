@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { defaultPaperSetHeader } from "./PaperSetListPage";
-import { PaperSetInfo } from "../Types";
-import { ListPageListSection } from '../listpage/ListPage';
+import { PaperSetInfo, isPaperSetInfo } from "../Types";
+import { ListPageListSection, HijackButtonProps } from '../listpage/ListPage';
 import SimplePager from "../SimplePager.tsx";
 
 interface Props {
@@ -58,21 +58,27 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
     function SelectedPager() {
       return <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={(page: number) => {setCurrentPage(page)}} />
     }
+    function HijackButton({className, item, index}: HijackButtonProps) {
+      return <button
+        className={className}
+        disabled={index === 0}
+        onClick={() => {
+          if (isPaperSetInfo(item)) {
+            // add to toBeRemoved
+            setToBeRemoved([...toBeRemoved, item]);
+            // remove from alreadyIn
+            const new_selected = alreadyIn.filter(i => i.papersetid != item.papersetid);
+            setAlreadyIn(new_selected);
+            setTotalPage(Math.floor(new_selected.length / per_page));
+          }
+        }}
+      >删除</button>
+    }
     return <ListPageListSection
       header={defaultPaperSetHeader}
       itemList={ArrayPager()}
-      // never disable, all buttons are clickable
-      shouldButtonDisable={(_, __) => { return false } }
       ListPager={SelectedPager}
-      setItemInfo={(item: PaperSetInfo) => {
-        // add to toBeRemoved
-        setToBeRemoved([...toBeRemoved, item]);
-        // remove from alreadyIn
-        const new_selected = alreadyIn.filter(i => i.papersetid != item.papersetid);
-        setAlreadyIn(new_selected);
-        setTotalPage(Math.floor(new_selected.length / per_page));
-      }}
-      buttonName="删除"
+      HijackButton={HijackButton}
     />;
   }
 
@@ -86,21 +92,27 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
     function SelectedPager() {
       return <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={(page: number) => {setCurrentPage(page)}} />
     }
+    function HijackButton({className, item, index}: HijackButtonProps) {
+      return <button
+        className={className}
+        disabled={index === 0}
+        onClick={() => {
+          if (isPaperSetInfo(item)) {
+            // remove from toBeRemoved
+            const new_selected = alreadyIn.filter(i => i.papersetid != item.papersetid);
+            setToBeRemoved(new_selected);
+            setTotalPage(Math.floor(new_selected.length / per_page));
+            // add to alreadyIn
+            setAlreadyIn([...alreadyIn, item]);
+          }
+        }}
+      >取消</button>
+    }
     return <ListPageListSection
       header={defaultPaperSetHeader}
       itemList={ArrayPager()}
-      // never disable, all buttons are clickable
-      shouldButtonDisable={(_, __) => { return false } }
       ListPager={SelectedPager}
-      setItemInfo={(item: PaperSetInfo) => {
-        // remove from toBeRemoved
-        const new_selected = alreadyIn.filter(i => i.papersetid != item.papersetid);
-        setToBeRemoved(new_selected);
-        setTotalPage(Math.floor(new_selected.length / per_page));
-        // add to alreadyIn
-        setAlreadyIn([...alreadyIn, item]);
-      }}
-      buttonName="取消"
+      HijackButton={HijackButton}
     />;
   }
 

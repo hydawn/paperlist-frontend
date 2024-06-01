@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PaperInfo, SearchBarProps, SearchParamType } from '../Types.tsx';
-import ListPage from "../listpage/ListPage.tsx";
+import ListPage, { HijackButtonProps } from "../listpage/ListPage.tsx";
 import PaperPageSearchBar from "./PaperPageSearchBar.tsx";
 
 interface Props {
@@ -9,7 +9,6 @@ interface Props {
 }
 
 export default function PaperListPage({setPaperInfo, hijackSetSearchParam}: Props) {
-  const [paperInfoList, setPaperInfoList] = useState<Array<PaperInfo> | null>(null);
   const header: PaperInfo = {
     paperid: '',
     userid: '',
@@ -35,16 +34,20 @@ export default function PaperListPage({setPaperInfo, hijackSetSearchParam}: Prop
 
   const defaultParam = {page: 1, per_page: 3, papersetid: '', title: '', uploader: '', journal: '', author: '', regex: false};
 
+  function HijackButton({className, item, index}: HijackButtonProps) {
+    return <button
+      className={className}
+      disabled={index === 0}
+      onClick={() => { setPaperInfo(item); }}
+    >更多</button>
+  }
+
   return <ListPage
-    setItemInfo={setPaperInfo}
     searchParamDefault={hijackSetSearchParam(defaultParam)}
-    itemList={paperInfoList || []}
-    setItemList={(data_list: object) => {setPaperInfoList(data_list as Array<PaperInfo>)}}
     header={header}
     getApi="/api/search_paper"
     ItemPageSearchBar={UsingPaperPageSearchBar}
     grandName="论文列表"
-    buttonName="更多"
-    shouldButtonDisable={(_, __) => { return false }}
-  />
+    HijackButton={HijackButton}
+  />;
 }

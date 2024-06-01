@@ -10,28 +10,28 @@ import {
 } from "../Types.tsx";
 
 interface ListPageProps {
-  setItemInfo: Function
   searchParamDefault: SearchParamType
-  itemList: Array<ItemType>
-  setItemList: Function
   header: ItemType
   getApi: string
   ItemPageSearchBar: ({}: SearchBarProps) => JSX.Element
   grandName: string
-  buttonName: string
-  shouldButtonDisable: (item: ItemType, index: number) => boolean
+  HijackButton: ({}: HijackButtonProps) => JSX.Element
 }
 
 interface ListPageListSectionProps {
   header: ItemType
   itemList: Array<ItemType>
-  shouldButtonDisable: (item: ItemType, index: number) => boolean
   ListPager: () => JSX.Element
-  setItemInfo: Function
-  buttonName: string
+  HijackButton: ({}: HijackButtonProps) => JSX.Element
 }
 
-export function ListPageListSection({ header, itemList, shouldButtonDisable, ListPager, setItemInfo, buttonName }: ListPageListSectionProps) {
+export interface HijackButtonProps {
+  className: string
+  item: ItemType
+  index: number
+}
+
+export function ListPageListSection({ header, itemList, ListPager, HijackButton }: ListPageListSectionProps) {
   interface PresentItemProps {
     item: ItemType,
     index: number,
@@ -56,12 +56,9 @@ export function ListPageListSection({ header, itemList, shouldButtonDisable, Lis
       }
       return <></>;
     }
-    function compositeDisable(item: ItemType, index: number) {
-      return shouldButtonDisable(item, index) || (index === 0);
-    }
     return <div className="input-group mb-3">
       <PresentItemDetails />
-      <button className="form-control paper-more" disabled={compositeDisable(item, index)} onClick={() => { setItemInfo(item) }}>{compositeDisable(item, index) ? "" : buttonName}</button>
+      <HijackButton className="form-control paper-more" item={item} index={index} />
     </div>;
   }
 
@@ -82,25 +79,23 @@ export function ListPageListSection({ header, itemList, shouldButtonDisable, Lis
 
 export default function ListPage(
     {
-      setItemInfo,
       searchParamDefault,
-      itemList,
-      setItemList,
       header,
       getApi,
       ItemPageSearchBar,
       grandName,
-      buttonName,
-      shouldButtonDisable
+      HijackButton
     }: ListPageProps
   ) {
   const [searchParam, setSearchParam] = useState(searchParamDefault);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(1);
 
+  const [itemList, setItemList] = useState<Array<ItemType>>([]);
+
   async function getItem(params: object) {
     await axios.get(getApi, { params: params }).then(resp => {
-      setItemList(resp.data.data.data_list);
+      setItemList(resp.data.data.data_list as Array<ItemType>);
       setCurrentPage(resp.data.data.current_page);
       setTotalPage(resp.data.data.total_page);
       console.log('current: ', resp.data.data.current_page)
@@ -122,6 +117,6 @@ export default function ListPage(
   return <>
     <h1>{grandName}</h1>
     <ItemPageSearchBar setSearchParam={(params: SearchParamType) => {setSearchParam(params); getItem(params)}} />
-    <ListPageListSection header={header} itemList={itemList} shouldButtonDisable={shouldButtonDisable} ListPager={ListPager} setItemInfo={setItemInfo} buttonName={buttonName} />
+    <ListPageListSection header={header} itemList={itemList} ListPager={ListPager} HijackButton={HijackButton} />
   </>;
 }

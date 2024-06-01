@@ -1,6 +1,8 @@
 import { PaperSetInfo } from "../Types"
 import LoadingPage from "../LoadingPage";
 import PaperListPage from "../paper/PaperListPage";
+import {useState} from "react";
+import PaperSetAddPaperPage from './edit/AddPaper';
 
 interface Props {
   paperSetInfo: PaperSetInfo
@@ -8,23 +10,32 @@ interface Props {
 }
 
 export default function PaperSetDetailPage({paperSetInfo, jumpPaperPage}: Props) {
+  const [onPage, setOnPage] = useState('detail');
+
   function PresentPaperSetDetail() {
     function Description() {
-      return <><div className="input-group mb-3">
-        <span className="input-group-text">描述</span>
-        <input type="text" className="form-control" value={paperSetInfo.description} readOnly disabled />
-        <button
-          className="input-group-text btn btn-primary"
-          data-bs-toggle="collapse" data-bs-target="#collapseExample"
-          aria-expanded="false" aria-controls="collapseExample">
-          更多
-        </button>
-      </div>
-      <div className="collapse mb-3" id="collapseExample">
-        <div className="card card-body">
-          {paperSetInfo.description}
+      return <>
+        <div className="input-group mb-3">
+          <span className="input-group-text">描述</span>
+          <input type="text" className="form-control" value={paperSetInfo.description} readOnly disabled />
+          <button
+            className="input-group-text btn btn-primary"
+            data-bs-toggle="collapse" data-bs-target="#collapsePaperSetDescription"
+            aria-expanded="false" aria-controls="collapseExample">
+            更多
+          </button>
         </div>
-      </div></>;
+        <div className="collapse mb-3" id="collapsePaperSetDescription">
+          <div className="card card-body">
+            {paperSetInfo.description}
+          </div>
+        </div>
+        <div className="input-group mb-3">
+          <button className="input-group-text btn btn-primary" onClick={() => { setOnPage('addpaper'); }} >
+            添加论文
+          </button>
+        </div>
+      </>;
     }
 
     return <>
@@ -38,6 +49,7 @@ export default function PaperSetDetailPage({paperSetInfo, jumpPaperPage}: Props)
   if (paperSetInfo === null)
     return <LoadingPage />;
   return <>
-    <PresentPaperSetDetail />
-  </>;
+    { onPage === 'detail' && <PresentPaperSetDetail /> }
+    { onPage === 'addpaper' && <PaperSetAddPaperPage paperSetInfo={paperSetInfo} onClickReturn={() => {setOnPage('detail');}} /> }
+  </>
 }

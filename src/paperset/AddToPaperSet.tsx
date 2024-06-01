@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { defaultPaperSetHeader } from "./PaperSetListPage";
 import { PaperSetInfo, isPaperSetInfo } from "../Types";
-import { ListPageListSection } from '../listpage/ListPage';
+import { ListPageListSection, HijackButtonProps } from '../listpage/ListPage';
 import SimplePager from "../SimplePager.tsx";
 import axios from "axios";
 
@@ -55,21 +55,25 @@ export default function AddToPaperSet({ paperId }: Props) {
     function SelectedPager() {
       return <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={(page: number) => {setCurrentPage(page)}} />
     }
+    function HijackButton({className, item, index}: HijackButtonProps) {
+      return <button
+        className={className}
+        disabled={index === 0 || (isPaperSetInfo(item) && alreadyIn.map(i => i.papersetid).includes(item.papersetid))}
+        onClick={() => {
+          if (isPaperSetInfo(item)) {
+            // delete from selected
+            const new_selected = selected.filter(i => i.papersetid != item.papersetid);
+            setSelected(new_selected);
+            setTotalPage(new_selected.length);
+          }
+        }}
+      >取消选择</button>
+    }
     return <ListPageListSection
       header={defaultPaperSetHeader}
       itemList={ArrayPager()}
-      shouldButtonDisable={(paperSet, _) => {
-        // if paper set is in already in, then it should be disabled
-        return isPaperSetInfo(paperSet) && alreadyIn.map(i => i.papersetid).includes(paperSet.papersetid);
-      } }
       ListPager={SelectedPager}
-      setItemInfo={(item: PaperSetInfo) => {
-        // delete from selected
-        const new_selected = selected.filter(i => i.papersetid != item.papersetid);
-        setSelected(new_selected);
-        setTotalPage(new_selected.length);
-      }}
-      buttonName="取消选择"
+      HijackButton={HijackButton}
     />;
   }
 
@@ -83,7 +87,7 @@ export default function AddToPaperSet({ paperId }: Props) {
       { params: { paperid: paperId, creater_me: true, page: page, per_page: per_page }}
     ).then(async resp => {
       console.log(`try to set response`);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
       setToBeSelected(resp.data.data.data_list as Array<PaperSetInfo>);
       setCurrentPageSelecting(parseInt(resp.data.data.current_page));
       setTotalPageSelecting(parseInt(resp.data.data.total_page));
@@ -93,32 +97,39 @@ export default function AddToPaperSet({ paperId }: Props) {
     console.log(`with effect load ${toBeSelected.length}`);
     getToBeSelected(currentPageSelecting);
   }, []);
+
   function SelectingPage() {
-
-    console.log('loading selecting page');
-
     function SelectedPager() {
       return <SimplePager currentPage={currentPageSelecting} totalPage={totalPageSelecting} loadPage={async (page: number) => {
         console.log(`try to load page of ${page}`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // getToBeSelected(page);
+        await new Promise(resolve => setTimeout(resolve, 600));
+        getToBeSelected(page);
       }} />;
     }
-
-    return <ListPageListSection
-      header={defaultPaperSetHeader}
-      itemList={toBeSelected}
-      shouldButtonDisable={(item, _) => {
+    function HijackButton({className, item, index}: HijackButtonProps) {
+      const shouldButtonDisable = () => {
+        if (index === 0)
+          return true;
         if (isPaperSetInfo(item))
           return alreadyIn.concat(selected).map(i => i.papersetid).includes(item.papersetid);
         return false;
-      }}
+      }
+      return <button
+        className={className}
+        disabled={shouldButtonDisable()}
+        onClick={() => {
+          if (isPaperSetInfo(item)) {
+            console.log(`add ${item.name} to selected`);
+            setSelected([...selected, item]);
+          }
+        }}
+      >选择</button>
+    }
+    return <ListPageListSection
+      header={defaultPaperSetHeader}
+      itemList={toBeSelected}
       ListPager={SelectedPager}
-      setItemInfo={(item: PaperSetInfo) => {
-        console.log(`add ${item.name} to selected`);
-        setSelected([...selected, item]);
-      }}
-      buttonName="选择"
+      HijackButton={HijackButton}
     />;
   }
 
