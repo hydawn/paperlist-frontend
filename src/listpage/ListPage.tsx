@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import SimplePager from "../SimplePager.tsx";
 import {
@@ -8,6 +8,7 @@ import {
   SearchParamType,
   SearchBarProps
 } from "../Types.tsx";
+import ReloadContext from "../ReloadContext.tsx";
 
 interface ListPageProps {
   searchParamDefault: SearchParamType
@@ -102,7 +103,8 @@ export default function ListPage(
     }).catch(resp => { console.error('got error', resp) })
   }
 
-  useEffect(() => {getItem(searchParam)}, []);
+  const reload = useContext(ReloadContext);
+  useEffect(() => {getItem(searchParam)}, [reload]);
 
   const loadPage = (page: number) => {
     const newparam = {...searchParam, page: page};

@@ -36,7 +36,7 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
       { papersetid: papersetid, paperid_list: [paperId] }
     ).then(resp => {
       console.log('got response', resp);
-      setMessage('成功删除');
+      setMessage('删除成功');
     }).catch(err => {
       console.error('error', err);
       setMessage(`删除失败： ${err.response.data.status}: ${err.response.data.error}`);
@@ -72,7 +72,7 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
             setTotalPage(Math.floor(new_selected.length / per_page));
           }
         }}
-      >删除</button>
+      >{index === 0 ? "" : "删除"}</button>
     }
     return <ListPageListSection
       header={defaultPaperSetHeader}
@@ -106,7 +106,7 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
             setAlreadyIn([...alreadyIn, item]);
           }
         }}
-      >取消</button>
+      >{index === 0 ? "" : "取消"}</button>
     }
     return <ListPageListSection
       header={defaultPaperSetHeader}

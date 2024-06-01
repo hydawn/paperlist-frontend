@@ -56,9 +56,16 @@ export default function AddToPaperSet({ paperId }: Props) {
       return <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={(page: number) => {setCurrentPage(page)}} />
     }
     function HijackButton({className, item, index}: HijackButtonProps) {
+      const disabled = () => {
+        if (index === 0)
+          return true;
+        if (isPaperSetInfo(item))
+          return alreadyIn.map(i => i.papersetid).includes(item.papersetid);
+        return false
+      }
       return <button
         className={className}
-        disabled={index === 0 || (isPaperSetInfo(item) && alreadyIn.map(i => i.papersetid).includes(item.papersetid))}
+        disabled={disabled()}
         onClick={() => {
           if (isPaperSetInfo(item)) {
             // delete from selected
@@ -67,7 +74,7 @@ export default function AddToPaperSet({ paperId }: Props) {
             setTotalPage(new_selected.length);
           }
         }}
-      >取消选择</button>
+      >{ disabled() ? "" : "取消选择" }</button>
     }
     return <ListPageListSection
       header={defaultPaperSetHeader}
@@ -123,7 +130,7 @@ export default function AddToPaperSet({ paperId }: Props) {
             setSelected([...selected, item]);
           }
         }}
-      >选择</button>
+      >{shouldButtonDisable() ? "" : "选择"}</button>
     }
     return <ListPageListSection
       header={defaultPaperSetHeader}

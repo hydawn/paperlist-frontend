@@ -3,7 +3,8 @@ import './PaperPage.css'
 import PaperDetailPage from "./PaperDetailPage.tsx";
 import AddPaper from "../userhome/AddPaper.tsx";
 import PaperListPage from "./PaperListPage.tsx";
-import { PaperInfo } from "../Types.tsx";
+import { PaperInfo, isPaperInfo } from "../Types.tsx";
+import { HijackButtonProps } from "../listpage/ListPage.tsx";
 import TopNavBar from '../TopNavBar.tsx';
 
 interface Props {
@@ -21,11 +22,25 @@ export default function PaperPage({givenPaperInfo}:Props ) {
     return false;
   }
 
-  console.log('onWindow is ', onWindow);
+  function HijackButton({className, item, index}: HijackButtonProps) {
+    return <button
+      className={className}
+      disabled={index === 0}
+      onClick={() => {
+        if (isPaperInfo(item)) {
+          setPaperInfo(item);
+          setOnWindow('论文详情');
+        }
+      }}
+    >{index === 0 ? "" : "更多"}</button>
+  }
 
   return <>
     <TopNavBar windowList={windowList} onWindow={onWindow} setOnWindow={setOnWindow} disableThis={disableWindow} />
-    { onWindow === '论文列表' && <PaperListPage setPaperInfo={(paperInfo: PaperInfo) => {setPaperInfo(paperInfo); setOnWindow('论文详情')}} hijackSetSearchParam={(p)=>{return p}} /> }
+    { onWindow === '论文列表' && <PaperListPage
+      hijackSetSearchParam={(p)=>{return p}}
+      HijackButton={HijackButton}
+    /> }
     { onWindow === '论文详情' && paperInfo && <PaperDetailPage inputPaperInfo={paperInfo} /> }
     { onWindow === '添加论文' && <AddPaper /> }
   </>;

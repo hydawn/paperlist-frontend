@@ -1,14 +1,14 @@
-import { useState } from "react";
 import { PaperInfo, SearchBarProps, SearchParamType } from '../Types.tsx';
 import ListPage, { HijackButtonProps } from "../listpage/ListPage.tsx";
 import PaperPageSearchBar from "./PaperPageSearchBar.tsx";
+import ReloadContext from "../ReloadContext.tsx";
 
 interface Props {
-  setPaperInfo: Function
   hijackSetSearchParam: (param: SearchParamType) => SearchParamType
+  HijackButton: ({}: HijackButtonProps) => JSX.Element
 }
 
-export default function PaperListPage({setPaperInfo, hijackSetSearchParam}: Props) {
+export default function PaperListPage({hijackSetSearchParam, HijackButton}: Props) {
   const header: PaperInfo = {
     paperid: '',
     userid: '',
@@ -33,14 +33,6 @@ export default function PaperListPage({setPaperInfo, hijackSetSearchParam}: Prop
   }
 
   const defaultParam = {page: 1, per_page: 3, papersetid: '', title: '', uploader: '', journal: '', author: '', regex: false};
-
-  function HijackButton({className, item, index}: HijackButtonProps) {
-    return <button
-      className={className}
-      disabled={index === 0}
-      onClick={() => { setPaperInfo(item); }}
-    >更多</button>
-  }
 
   return <ListPage
     searchParamDefault={hijackSetSearchParam(defaultParam)}
