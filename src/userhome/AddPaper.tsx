@@ -59,6 +59,19 @@ export default function AddPaper({paperInfo, hijackPost}: Props) {
   const [isPrivate, setIsPrivate] = useState<boolean>(paperInfo?.is_private || false);
   const [message, setMessage] = useState<string | null>(null);
 
+  function clearAll() {
+    setTitle(null);
+    setJournal(null);
+    setAbstract(null);
+    setCitations(0);
+    setFileName(null);
+    setFileContent(null);
+    setAuthors(['']);
+    setPubdate(null);
+    setIsPrivate(false);
+    setMessage(null);
+  }
+
   var paperForm = {
     title: '',
     abstract: '',
@@ -202,7 +215,7 @@ export default function AddPaper({paperInfo, hijackPost}: Props) {
 
   function Body() {
     if (message != null)
-      return <><p>{message}</p><button className="btn btn-success" onClick={() => setMessage(null)}>继续添加</button></>;
+      return <><p>{message}</p><button className="btn btn-success" onClick={clearAll}>继续添加</button></>;
     return <>
       <form className="mt-3 mx-5" onSubmit={submitInsertion}>
         <div className="mb-3">
