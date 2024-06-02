@@ -78,8 +78,16 @@ export default function PaperReview({paperInfo}: Props) {
       return <LoadingPage />
     return <>
       {commentList.map((comment) => (
-        <div className="input-group">
-        {comment.comment} by {comment.username} on {comment.commented_on}
+        <div className="card mb-3">
+          <div className="card-header">
+            {comment.username}
+          </div>
+          <div className="card-body">
+            <h5 className="card-title">{comment.comment}</h5>
+            <p className="card-text">
+              : {comment.commented_on.split('.')[0].replace('T', ' ')}
+            </p>
+          </div>
         </div>
       ))}
     </>;
@@ -99,6 +107,7 @@ export default function PaperReview({paperInfo}: Props) {
 
   function CommentSection() {
     return <>
+      <h3>评论区</h3>
       <ShowComment />
       <AddComment />
       { currentPage && totalPage && <SimplePager currentPage={currentPage} totalPage={totalPage} loadPage={(page: number) => {getComment(page)}} />}
