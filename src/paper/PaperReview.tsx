@@ -77,8 +77,8 @@ export default function PaperReview({paperInfo}: Props) {
     if (commentList === null)
       return <LoadingPage />
     return <>
-      {commentList.map((comment) => (
-        <div className="card mb-3">
+      {commentList.map((comment, index) => (
+        <div key={"showcomment-" + index} className="card mb-3">
           <div className="card-header">
             {comment.username}
           </div>

@@ -24,7 +24,6 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
       '/api/get_papers_paperset',
       { params: { paperid: paperId, filter: 'mine' } }
     ).then(resp => {
-      console.log('got paperset response', resp);
       setAlreadyIn(resp.data.data.data_list as Array<PaperSetInfo>);
     }).catch(resp => {console.error('error', resp)})
   }
@@ -46,13 +45,10 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
     toBeRemoved.map(item => { removePaper(item.papersetid) });
   }
 
-  console.log('loading remove from paperset')
-
   function ShowAlreadyIn() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(alreadyIn.length / per_page);
     function ArrayPager() {
-      console.log(`already in has length ${alreadyIn.length}`)
       return alreadyIn.slice((currentPage - 1) * per_page, currentPage * per_page);
     }
     function SelectedPager() {
@@ -86,7 +82,6 @@ export default function RemoveFromPaperSet({ paperId }: Props) {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(toBeRemoved.length / per_page);
     function ArrayPager() {
-      console.log(`toBeRemoved has length ${toBeRemoved.length}`)
       return toBeRemoved.slice((currentPage - 1) * per_page, currentPage * per_page);
     }
     function SelectedPager() {

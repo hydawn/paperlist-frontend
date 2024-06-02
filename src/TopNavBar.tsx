@@ -7,8 +7,8 @@ interface TopNavBarProps {
 
 export default function TopNavBar({windowList, onWindow, setOnWindow, disableThis}: TopNavBarProps) {
   function NonDropdownButtons() {
-    return windowList.map(item => (
-      <li className="nav-item">
+    return windowList.map((item, index) => (
+      <li className="nav-item" key={"dropdown-index-" + index}>
         <a className={"nav-link" + (item == onWindow ? " active" : (disableThis(item) ? " disabled" : ""))} role="button" aria-current="page" onClick={() => {setOnWindow(item)}}>{item}</a>
       </li>
     ))

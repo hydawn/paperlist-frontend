@@ -22,7 +22,6 @@ export default function AddToPaperSet({ paperId }: Props) {
       '/api/get_papers_paperset',
       { params: { paperid: paperId, filter: 'mine' } }
     ).then(resp => {
-      console.log('got paperset response', resp);
       setAlreadyIn(resp.data.data.data_list as Array<PaperSetInfo>);
     }).catch(resp => {console.error('error', resp)})
   }
@@ -33,7 +32,6 @@ export default function AddToPaperSet({ paperId }: Props) {
       '/api/add_to_paperset',
       { papersetid: papersetid, paperid_list: [paperId] }
     ).then(resp => {
-      console.log('got response', resp);
       setMessage('添加成功');
     }
     ).catch(err => {
@@ -93,7 +91,6 @@ export default function AddToPaperSet({ paperId }: Props) {
       '/api/search_paperset',
       { params: { paperid: paperId, creater_me: true, page: page, per_page: per_page }}
     ).then(async resp => {
-      console.log(`try to set response`);
       await new Promise(resolve => setTimeout(resolve, 500));
       setToBeSelected(resp.data.data.data_list as Array<PaperSetInfo>);
       setCurrentPageSelecting(parseInt(resp.data.data.current_page));
@@ -101,14 +98,12 @@ export default function AddToPaperSet({ paperId }: Props) {
     }).catch(err => { console.error(err) });
   }
   useEffect(() => {
-    console.log(`with effect load ${toBeSelected.length}`);
     getToBeSelected(currentPageSelecting);
   }, []);
 
   function SelectingPage() {
     function SelectedPager() {
       return <SimplePager currentPage={currentPageSelecting} totalPage={totalPageSelecting} loadPage={async (page: number) => {
-        console.log(`try to load page of ${page}`);
         await new Promise(resolve => setTimeout(resolve, 600));
         getToBeSelected(page);
       }} />;
@@ -126,7 +121,6 @@ export default function AddToPaperSet({ paperId }: Props) {
         disabled={shouldButtonDisable()}
         onClick={() => {
           if (isPaperSetInfo(item)) {
-            console.log(`add ${item.name} to selected`);
             setSelected([...selected, item]);
           }
         }}

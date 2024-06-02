@@ -67,7 +67,9 @@ export function ListPageListSection({ header, itemList, ListPager, HijackButton 
     return <div>
       <PresentItem item={header} index={0} />
       {itemList && itemList.map((item, index) => (
-        <PresentItem item={item} index={index + 1} />
+        <div key={"presentitem" + index}>
+          <PresentItem item={item} index={index + 1} />
+        </div>
       ))}
     </div>;
   }

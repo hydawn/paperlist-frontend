@@ -51,7 +51,7 @@ export default function PopUpPaperSetManagement({paperid}: Props) {
       添加到论文库
     </button>
     <AddPaperModal />
-    <button type="button" className="input-group-text btn btn-primary" data-bs-toggle="modal" data-bs-target="#removeFromPaperSetModal">
+    <button type="button" className="input-group-text btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeFromPaperSetModal">
       从论文库中删除
     </button>
     <RemovePaperModal />

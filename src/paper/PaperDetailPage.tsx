@@ -5,9 +5,12 @@ import LoadingPage from "../LoadingPage";
 import PaperReview from "./PaperReview";
 import PaperPreview from "./PaperPreview";
 import PopUpPaperSetManagement from "../paperset/PopUpPaperSetManagement";
+import { ModifyPaperInfoButton } from "./ModifyPaperInfo";
 
 interface Props {
-  inputPaperInfo: PaperInfo
+  paperInfo: PaperInfo
+  reloadPaperInfo: Function
+  jumpToPaperList: Function
 }
 
 async function handleFileDownload(paperId: string) {
@@ -37,9 +40,11 @@ interface PresentPaperDetailProps {
   paperInfo: PaperInfo,
   previewActive: boolean,
   setPreviewActive: Function,
+  reloadPaperInfo: Function
+  jumpToPaperList: Function
 }
 
-function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: PresentPaperDetailProps) {
+function PresentPaperDetail({paperInfo, previewActive, setPreviewActive, reloadPaperInfo, jumpToPaperList}: PresentPaperDetailProps) {
   function Abstract() {
     return <><div className="input-group mb-3">
       <span className="input-group-text">摘要</span>
@@ -66,7 +71,6 @@ function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: Presen
   }
 
   function OtherInfo() {
-
     return <div className="input-group mb-3">
       <span className="input-group-text">发表期刊</span>
       <input type="text" className="form-control" value={paperInfo.journal} readOnly disabled />
@@ -74,6 +78,7 @@ function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: Presen
       <input type="text" className="form-control" value={paperInfo.publication_date} readOnly disabled />
       <span className="input-group-text">总引用</span>
       <input type="text" className="form-control" value={paperInfo.total_citations} readOnly disabled />
+      <ModifyPaperInfoButton paperInfo={paperInfo} className="input-group-text" reloadPaperInfo={reloadPaperInfo} jumpToPaperList={jumpToPaperList} />
       <PopUpPaperSetManagement paperid={paperInfo.paperid} />
       <button
         className={"input-group-text btn " + (previewActive ? " btn-danger" : " btn-primary")} onClick={() => { setPreviewActive(!previewActive) }}
@@ -84,6 +89,7 @@ function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: Presen
     </div>;
   }
 
+  console.log(`loading title of ${paperInfo?.title}`);
   return <>
     <h1>{paperInfo.title}</h1>
     <Authors />
@@ -92,16 +98,19 @@ function PresentPaperDetail({paperInfo, previewActive, setPreviewActive}: Presen
   </>;
 }
 
-export default function PaperDetailPage({inputPaperInfo}: Props) {
-  const [paperInfo, setPaperInfo] = useState<PaperInfo | null>(null);
+export default function PaperDetailPage({paperInfo, reloadPaperInfo, jumpToPaperList}: Props) {
   const [previewActive, setPreviewActive] = useState(false);
-
-  useEffect(() => { setPaperInfo(inputPaperInfo) }, []);
 
   if (paperInfo === null)
     return <LoadingPage />;
   return <>
-    <PresentPaperDetail paperInfo={paperInfo} previewActive={previewActive} setPreviewActive={setPreviewActive} />
+    <PresentPaperDetail
+      paperInfo={paperInfo}
+      previewActive={previewActive}
+      setPreviewActive={setPreviewActive}
+      reloadPaperInfo={reloadPaperInfo}
+      jumpToPaperList={jumpToPaperList}
+    />
     { previewActive && <PaperPreview paperInfo={paperInfo} /> }
     <PaperReview paperInfo={paperInfo} />
   </>;
