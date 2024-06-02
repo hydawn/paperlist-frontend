@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { PaperSetInfo, SearchParamType } from '../Types.tsx';
 import ListPage, { HijackButtonProps } from "../listpage/ListPage.tsx";
 import PaperSetSearchBar from "./PaperSetSearchBar.tsx";
@@ -14,6 +13,8 @@ export const defaultPaperSetHeader: PaperSetInfo = {
   name: '论文库名',
   description: '描述',
   is_private: false,
+  can_modify: false,
+  can_comment: false
 }
 
 export default function PaperSetListPage({ setPaperSetInfo }: Props) {

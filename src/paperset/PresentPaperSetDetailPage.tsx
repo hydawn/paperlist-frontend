@@ -34,7 +34,7 @@ function Description({paperSetInfo, setOnPage, userId, setPaperSetDeleteMessage 
   function DeletePaperSetButton() {
     if (userId && userId == paperSetInfo.userid) {
       return <button className="input-group-text btn btn-danger" onClick={async () => {
-        await axios.post('/api/delete_paperset', { papersetid: paperSetInfo.papersetid }).then(resp => {
+        await axios.post('/api/delete_paperset', { papersetid: paperSetInfo.papersetid }).then((_) => {
           setPaperSetDeleteMessage('删除成功');
           // jumpToPaperSetList();
         }).catch(handleError)

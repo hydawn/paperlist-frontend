@@ -1,8 +1,8 @@
-import {ItemType, Comment} from "./Types";
+import {Comment} from "./Types";
 import LoadingPage from "./LoadingPage";
 import {useState, useEffect} from "react";
 
-import axios, {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios";
 import SimplePager from "./SimplePager";
 
 export function handleError(resp: AxiosResponse) {

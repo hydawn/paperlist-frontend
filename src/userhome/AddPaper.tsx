@@ -84,7 +84,7 @@ export default function AddPaper({paperInfo, hijackPost}: Props) {
     authors: [''],
   }
 
-  function setFile(inputString: string, file_type: string, file_name: string) {
+  function setFile(inputString: string, _: string, file_name: string) {
     setFileName(file_name);
     setFileContent(inputString);
   }

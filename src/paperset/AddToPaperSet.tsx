@@ -31,7 +31,7 @@ export default function AddToPaperSet({ paperId }: Props) {
     await axios.post(
       '/api/add_to_paperset',
       { papersetid: papersetid, paperid_list: [paperId] }
-    ).then(resp => {
+    ).then((_) => {
       setMessage('添加成功');
     }
     ).catch(err => {

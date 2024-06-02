@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import AddToPaperSet from "./AddToPaperSet.tsx"
 import RemoveFromPaperSet from "./RemoveFromPaperSet.tsx";
-import axios from 'axios';
 
 interface Props {
   paperid: string
