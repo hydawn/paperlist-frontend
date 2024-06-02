@@ -43,7 +43,7 @@ export default function PaperReview({paperInfo}: Props) {
   function ShowReview() {
     if (review === null)
       return <LoadingPage />
-    return <>review: {review}</>
+    return <h5>用户评分: <span className="badge text-bg-secondary">{review}</span></h5>
   }
 
   function AddReview() {
