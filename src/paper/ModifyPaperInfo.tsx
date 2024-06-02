@@ -68,8 +68,12 @@ export function ModifyPaperInfoButton({paperInfo, className, reloadPaperInfo, ju
   useEffect(() => { getUserId() }, []);
 
   function DeletePaperButton() {
-    return <button className={className + " btn btn-danger"} onClick={() => {
-      // TODO: post /api/delete_paper, jump to paper list
+    return <button className={className + " btn btn-danger"} onClick={async () => {
+      await axios.post('/api/delete_paper', {paperid: paperInfo.paperid}).then((_) => {
+        jumpToPaperList();
+      }).catch(err => {
+        console.error('got error', err)
+      });
     }} >删除论文</button>
   }
 
