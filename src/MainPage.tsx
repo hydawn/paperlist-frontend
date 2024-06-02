@@ -12,8 +12,8 @@ interface Prop {
 };
 
 export default function MainPage({setLoginStatus}: Prop) {
-  // const [onPage, setOnPage] = useState('论文库');
-  const [onPage, setOnPage] = useState('论文');
+  const [onPage, setOnPage] = useState('论文库');
+  // const [onPage, setOnPage] = useState('论文');
   const [givenPaperInfo, setGivenPaperInfo] = useState<PaperInfo | null>(null);
 
   function MainPageWindow() {
