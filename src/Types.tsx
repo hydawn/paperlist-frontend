@@ -38,6 +38,8 @@ export type PaperSetInfo = {
   name: string,
   description: string,
   is_private: boolean,
+  can_modify: boolean,
+  can_comment: boolean,
 }
 
 export type SearchPaperSetParam = {

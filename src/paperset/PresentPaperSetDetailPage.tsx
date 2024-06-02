@@ -4,27 +4,43 @@ import PaperListPage from "../paper/PaperListPage";
 import { HijackButtonProps } from "../listpage/ListPage.tsx";
 import axios from "axios";
 import ReloadContext from "../ReloadContext.tsx";
+import PaperSetReview from "./PaperReview.tsx";
+import {handleError} from "../ReviewPage.tsx";
 
 interface Props {
   paperSetInfo: PaperSetInfo
   jumpPaperPage: Function
   setOnPage: Function
+  jumpToPaperSetList: Function
 }
 
 interface DescriptionProps {
   paperSetInfo: PaperSetInfo
   setOnPage: Function
   userId: string | null
+  setPaperSetDeleteMessage: Function
 }
 
-function Description({paperSetInfo, setOnPage, userId}: DescriptionProps) {
+function Description({paperSetInfo, setOnPage, userId, setPaperSetDeleteMessage }: DescriptionProps) {
   function AddPaperButton() {
     if (userId && userId == paperSetInfo.userid) {
-      return <div className="input-group mb-3">
-        <button className="input-group-text btn btn-primary" onClick={() => { setOnPage('addpaper'); }} >
-          添加论文
-        </button>
-      </div>;
+      return <button className="input-group-text btn btn-primary" onClick={() => { setOnPage('addpaper'); }} >
+        添加论文
+      </button>;
+    }
+    return <></>;
+  }
+
+  function DeletePaperSetButton() {
+    if (userId && userId == paperSetInfo.userid) {
+      return <button className="input-group-text btn btn-danger" onClick={async () => {
+        await axios.post('/api/delete_paperset', { papersetid: paperSetInfo.papersetid }).then(resp => {
+          setPaperSetDeleteMessage('删除成功');
+          // jumpToPaperSetList();
+        }).catch(handleError)
+      }} >
+        删除论文库
+      </button>;
     }
     return <></>;
   }
@@ -46,11 +62,13 @@ function Description({paperSetInfo, setOnPage, userId}: DescriptionProps) {
       </div>
     </div>
     <AddPaperButton />
+    <DeletePaperSetButton />
   </>;
 }
 
-export default function PresentPaperSetDetail({ paperSetInfo, jumpPaperPage, setOnPage }: Props) {
+export default function PresentPaperSetDetail({ paperSetInfo, jumpPaperPage, setOnPage, jumpToPaperSetList }: Props) {
   const [message, setMessage] = useState<string | null>(null);
+  const [paperSetDeleteMessage, setPaperSetDeleteMessage] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [reload, setReload] = useState(false);
 
@@ -88,7 +106,7 @@ export default function PresentPaperSetDetail({ paperSetInfo, jumpPaperPage, set
         { papersetid: paperSetInfo.papersetid, paperid_list: [item.paperid] }
       ).then(resp => {
         console.log('got response', resp);
-        setMessage('成功删除');
+        setMessage('删除成功');
         setReload(!reload);
       }).catch(err => {
         console.error('error', err);
@@ -111,15 +129,40 @@ export default function PresentPaperSetDetail({ paperSetInfo, jumpPaperPage, set
     </div>;
   }
 
-  return <>
-    <h1>{paperSetInfo.name}</h1>
-    <Description paperSetInfo={paperSetInfo} setOnPage={setOnPage} userId={userId} />
-    <Alerts />
-    <ReloadContext.Provider value={reload}>
+  function PaperSetPapers() {
+    return <ReloadContext.Provider value={reload}>
       <PaperListPage
         hijackSetSearchParam={(param) => { return {...param, papersetid: paperSetInfo.papersetid} }}
         HijackButton={userId === paperSetInfo.userid ? MyHijackButton : OthersHijackButton}
       />
-    </ReloadContext.Provider>
+    </ReloadContext.Provider>;
+  }
+
+  function CommentSection() {
+    if (paperSetInfo.can_comment || paperSetInfo.userid === userId)
+      // make it comment
+      return <PaperSetReview paperSetInfo={paperSetInfo} />;
+    return <></>;
+  }
+
+  function LivingPage() {
+    return <>
+      <Description paperSetInfo={paperSetInfo} setOnPage={setOnPage} userId={userId} setPaperSetDeleteMessage={setPaperSetDeleteMessage} />
+      <Alerts />
+      <PaperSetPapers />
+      <CommentSection />
+    </>;
+  }
+
+  function DeadPage() {
+    return <>
+      <p>{paperSetDeleteMessage}</p>
+      <button className="btn btn-success" onClick={() => jumpToPaperSetList()} >返回论文库列表</button>
+    </>
+  }
+
+  return <>
+    <h1>{paperSetInfo.name}</h1>
+    {paperSetDeleteMessage === null ? <LivingPage /> : <DeadPage />}
   </>;
 }

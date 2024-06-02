@@ -85,8 +85,8 @@ export default function SearchButtons(
 
   function FancySearch() {
     return <div className="input-group mb-3">
-      {simpleSearch.map((item) => (
-      <div className="form-floating">
+      {simpleSearch.map((item, index) => (
+      <div key={"fancysearch"+index} className="form-floating">
         <input
           onBlur={(event) => {updaterMap[item](event.target.value)}}
           type="text"
