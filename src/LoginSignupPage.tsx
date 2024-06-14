@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import SideBar from "./SideBar";
 import { Container, Row, Col } from 'react-bootstrap';
+import { handleError } from "./Functions";
 
 interface LoginProps {
   setLoginStatus: Function
@@ -21,9 +22,7 @@ function LoginWindow({setLoginStatus}: LoginProps) {
       console.log('good:', resp);
       setLoginStatus(true);
     })
-    .catch(resp => {
-      console.log('signup error: ', resp);
-    })
+    .catch(handleError)
   }
 
   return (
@@ -64,10 +63,7 @@ function SignupWindow({backToLogin}: SignupProps) {
       alert('signup success');
       backToLogin();
     })
-    .catch(resp => {
-      console.log('submit signup error:', resp);
-      alert('signup error: ' + resp.response.data.error)
-    })
+    .catch(handleError)
   }
 
   console.log('load signup window')

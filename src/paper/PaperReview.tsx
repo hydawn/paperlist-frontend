@@ -1,6 +1,7 @@
-import { CommentSection, ReviewSection, handleError } from "../ReviewPage";
+import { CommentSection, ReviewSection } from "../ReviewPage";
 import axios, {AxiosResponse}  from "axios";
 import { PaperInfo } from "../Types";
+import { handleError } from "../Functions";
 
 interface Props {
   paperInfo: PaperInfo

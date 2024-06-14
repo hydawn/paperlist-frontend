@@ -1,6 +1,7 @@
-import { CommentSection, handleError } from "../ReviewPage";
+import { CommentSection } from "../ReviewPage";
 import axios, {AxiosResponse}  from "axios";
 import { PaperSetInfo } from "../Types";
+import { handleError } from "../Functions";
 
 interface Props {
   paperSetInfo: PaperSetInfo
@@ -16,7 +17,10 @@ export default function PaperSetReview({paperSetInfo}: Props) {
 
   return <>
     <CommentSection getFromWeb={getComment} pushToWeb={async (comment: string, onSuccess: Function) => {
-      await axios.post('/api/comment_paperset', {papersetid: paperSetInfo.papersetid, comment: comment}).then((_) => { onSuccess() }).catch(handleError);
+      await axios.post(
+        '/api/comment_paperset',
+        {papersetid: paperSetInfo.papersetid, comment: comment}
+      ).then((_) => { onSuccess() }).catch(handleError);
     }} />
   </>;
 }

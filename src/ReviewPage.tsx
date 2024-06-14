@@ -5,11 +5,6 @@ import {useState, useEffect} from "react";
 import {AxiosResponse} from "axios";
 import SimplePager from "./SimplePager";
 
-export function handleError(resp: AxiosResponse) {
-  console.error('got error', resp);
-  return resp;
-}
-
 interface Props {
   getFromWeb: Function
   pushToWeb: Function

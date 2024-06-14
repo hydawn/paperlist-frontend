@@ -5,7 +5,7 @@ import { HijackButtonProps } from "../listpage/ListPage.tsx";
 import axios from "axios";
 import ReloadContext from "../ReloadContext.tsx";
 import PaperSetReview from "./PaperReview.tsx";
-import {handleError} from "../ReviewPage.tsx";
+import {handleError} from "../Functions.tsx";
 
 interface Props {
   paperSetInfo: PaperSetInfo
@@ -23,7 +23,7 @@ interface DescriptionProps {
 
 function Description({paperSetInfo, setOnPage, userId, setPaperSetDeleteMessage }: DescriptionProps) {
   function AddPaperButton() {
-    if (userId && userId == paperSetInfo.userid) {
+    if (userId && (paperSetInfo.can_modify || userId == paperSetInfo.userid)) {
       return <button className="input-group-text btn btn-primary" onClick={() => { setOnPage('addpaper'); }} >
         添加论文
       </button>;
@@ -74,7 +74,7 @@ export default function PresentPaperSetDetail({ paperSetInfo, jumpPaperPage, set
 
   const getUserId = async () => {
     await axios.get('/api/userid').then(resp => {
-        setUserId(resp.data.data.userid);
+      setUserId(resp.data.data.userid);
     }).catch(err => { console.error(err) })
   };
   useEffect(() => { getUserId() }, []);
@@ -133,7 +133,7 @@ export default function PresentPaperSetDetail({ paperSetInfo, jumpPaperPage, set
     return <ReloadContext.Provider value={reload}>
       <PaperListPage
         hijackSetSearchParam={(param) => { return {...param, papersetid: paperSetInfo.papersetid} }}
-        HijackButton={userId === paperSetInfo.userid ? MyHijackButton : OthersHijackButton}
+        HijackButton={(userId === paperSetInfo.userid || paperSetInfo.can_modify) ? MyHijackButton : OthersHijackButton}
       />
     </ReloadContext.Provider>;
   }

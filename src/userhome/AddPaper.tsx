@@ -12,6 +12,7 @@ function handleFileChange(event: ChangeEvent<HTMLInputElement>, setFile: Functio
   reader.onload = async () => {
    if (reader.result && typeof reader.result === 'string') {
       const base64 = reader.result.split(',')[1];
+      alert(file.type)
       setFile(base64, file.type, file.name);
     }
   };
